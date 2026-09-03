@@ -70,6 +70,7 @@ func intializeModel() model {
 	finalList.Title = "All notes"
 	finalList.Styles.Title = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("16")).Background(lipgloss.Color("254")).Padding(0, 1)
+	finalList.SetShowStatusBar(false)
 
 	return model{
 		newFileInput:           ti,
@@ -173,7 +174,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.list.SetItems(notelist)
 			m.showinglist = true
 			return m, nil
-
 		case "esc":
 			if m.createFileInputVisible {
 				m.createFileInputVisible = false
@@ -187,6 +187,39 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					break
 				}
 				m.showinglist = false
+			}
+			return m, nil
+		case "ctrl+d":
+			//TODO: Create a Delete hotkey
+			if m.curretFile != nil {
+				filepath := m.curretFile.Name()
+				err := m.curretFile.Close()
+				if err != nil {
+					log.Fatal("Unable to close file")
+				}
+				if err := os.Remove(filepath); err != nil {
+					log.Fatal("Error deleting file : ", err)
+					return m, nil
+				}
+				m.curretFile = nil
+				m.noteTextArea.SetValue("")
+				m.list.SetItems(listFiles())
+			}
+			if m.showinglist {
+				item, ok := m.list.SelectedItem().(item)
+				if ok {
+					filepath := fmt.Sprintf("%s/%s", vaultDir, item.title)
+					err := os.Remove(filepath)
+					if err != nil {
+						log.Printf("Error deleting file : ", err)
+						return m, nil
+					}
+					m.curretFile = nil
+					m.list.SetItems(listFiles())
+
+				}
+				return m, nil
+
 			}
 			return m, nil
 		}
@@ -217,7 +250,7 @@ func (m model) View() string {
 		PaddingLeft(4).
 		PaddingRight(4)
 	welcome := style.Render("Welcome to Termi-Notes")
-	help_keys := "Ctrl+N: New file, Ctrl+L: List files, Esc: Back, Ctrl+S: Save, Ctrl+Q/Q: Quit"
+	help_keys := "Ctrl+N: New file, Ctrl+L: List files, Esc: Back,\nCtrl+S: Save, Ctrl+D: Delete, Ctrl+C/Q: Quit"
 
 	view := ""
 	if m.createFileInputVisible {
