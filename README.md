@@ -9,6 +9,7 @@ A fast, lightweight, and beautiful terminal-based note-taking application (TUI) 
 - **⚡ Lightweight & Fast**: Quick note-taking directly from your command line without leaving the terminal.
 - **📁 Local Markdown Vault**: Automatically saves notes as standard `.md` files in `~/.terminotes`.
 - **🔍 Built-in Search & Filter**: Easily filter and fuzzy search through your notes by title.
+- **🗑️ Note Deletion**: Quickly delete notes using `Ctrl + D` directly from the list view or while editing.
 - **🕒 Timestamps**: View modification dates for all saved notes.
 - **🎨 Stylish TUI**: Clean interface with modern styling powered by Lip Gloss.
 
@@ -62,6 +63,7 @@ go install
 | `Ctrl + L` | List all existing notes |
 | `Enter` | Open selected note / Confirm note creation |
 | `Ctrl + S` | Save current note to disk |
+| `Ctrl + D` | Delete current note (while editing) or selected note (in list view) |
 | `Esc` | Return to main view / Cancel current prompt |
 | `/` *(in list view)* | Filter / search through notes |
 | `Ctrl + C` / `q` | Quit application |
